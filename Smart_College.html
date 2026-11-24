@@ -1,0 +1,1195 @@
+<!doctype html>
+<html lang="kk">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Smart College</title>
+    <style>
+/* =========================================================
+   РОЛЬ 1: ДИЗАЙНЕР — стиль «жидкое стекло» (liquid glass)
+   ========================================================= */
+
+:root {
+    --main:   #7c3aed;   /* фиолетовый */
+    --main2:  #ec4899;   /* розовый */
+    --accent: #06b6d4;   /* бирюзовый */
+    --grad:   linear-gradient(135deg, #7c3aed, #ec4899);
+    --text:   #1e1b4b;
+    --muted:  #7a7a9d;
+    --green:  #10b981;
+    --red:    #f43f5e;
+    --orange: #f59e0b;
+
+    /* стекло */
+    --glass:        rgba(255, 255, 255, .45);
+    --glass-strong: rgba(255, 255, 255, .65);
+    --glass-border: rgba(255, 255, 255, .7);
+    --blur:         blur(22px) saturate(180%);
+    --shadow:       0 8px 32px rgba(76, 29, 149, .12), inset 0 1px 0 rgba(255, 255, 255, .9);
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    display: flex;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f5f3ff 0%, #fdf2f8 50%, #ecfeff 100%);
+    background-attachment: fixed;
+}
+
+/* Цветные «капли» на фоне — сквозь них просвечивает стекло */
+body::before, body::after, .main::before {
+    content: ""; position: fixed; border-radius: 50%; filter: blur(70px); z-index: -1;
+    animation: float 18s ease-in-out infinite alternate;
+}
+body::before { width: 480px; height: 480px; background: #a78bfa; top: -120px; left: 120px; }
+body::after  { width: 420px; height: 420px; background: #f9a8d4; bottom: -120px; right: -60px; animation-delay: -6s; }
+.main::before { width: 360px; height: 360px; background: #67e8f9; top: 35%; left: 45%; opacity: .7; animation-delay: -12s; }
+
+@keyframes float {
+    0%   { transform: translate(0, 0) scale(1); }
+    50%  { transform: translate(80px, 60px) scale(1.15); }
+    100% { transform: translate(-60px, 30px) scale(.95); }
+}
+
+a { color: inherit; text-decoration: none; }
+
+
+/* ---------- Стекло: общий стиль ---------- */
+.sidebar, .topbar, .card {
+    background: var(--glass);
+    backdrop-filter: var(--blur);
+    -webkit-backdrop-filter: var(--blur);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow);
+}
+
+/* ---------- Меню слева ---------- */
+.sidebar {
+    width: 240px; flex: none; margin: 14px 0 14px 14px; border-radius: 24px;
+    padding: 22px 16px; display: flex; flex-direction: column; gap: 26px;
+    position: sticky; top: 14px; height: calc(100vh - 28px);
+    animation: slideRight .6s ease backwards;
+}
+.brand { display: flex; align-items: center; gap: 12px; padding: 0 8px; }
+.brand-logo {
+    width: 44px; height: 44px; border-radius: 14px; background: var(--grad); color: #fff;
+    display: grid; place-items: center; font-weight: 800;
+    box-shadow: 0 6px 18px rgba(124, 58, 237, .4);
+    animation: glow 3s ease-in-out infinite;
+}
+.brand b { display: block; font-size: 16px; }
+.brand small { color: var(--muted); }
+
+.sidebar nav { display: flex; flex-direction: column; gap: 6px; }
+.sidebar nav a {
+    display: flex; align-items: center; gap: 12px; padding: 11px 14px;
+    border-radius: 14px; color: #4c4673; font-weight: 600; transition: .25s;
+}
+.sidebar nav a:hover { background: rgba(255, 255, 255, .6); transform: translateX(4px); }
+.sidebar nav a.active {
+    background: var(--grad); color: #fff; box-shadow: 0 8px 20px rgba(236, 72, 153, .3);
+}
+
+.sidebar-card {
+    margin-top: auto; border-radius: 16px; padding: 14px; color: #fff;
+    background: linear-gradient(135deg, rgba(124, 58, 237, .85), rgba(6, 182, 212, .85));
+}
+.sidebar-card b { display: block; }
+.sidebar-card small { opacity: .9; }
+
+/* ---------- Верхняя панель ---------- */
+.main { flex: 1; min-width: 0; }
+
+.topbar {
+    margin: 14px 14px 0; border-radius: 20px; padding: 10px 20px;
+    display: flex; justify-content: space-between; align-items: center; gap: 20px;
+    position: sticky; top: 14px; z-index: 5;
+    animation: slideDown .6s ease backwards;
+}
+.top-search {
+    display: flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, .55);
+    border: 1px solid var(--glass-border); border-radius: 14px; padding: 0 12px;
+    width: 380px; max-width: 100%; color: var(--muted); transition: .25s;
+}
+.top-search:focus-within { box-shadow: 0 0 0 4px rgba(124, 58, 237, .15); background: #fff; }
+.top-search input[type=text] { border: 0; background: transparent; padding: 10px 0; width: 100%; outline: none; }
+.top-right { display: flex; align-items: center; gap: 18px; }
+.date { color: #4c4673; background: rgba(255, 255, 255, .55); border-radius: 12px; padding: 8px 12px; }
+.bell { color: #4c4673; animation: ring 4s ease-in-out infinite; transform-origin: top center; }
+.user { display: flex; align-items: center; gap: 10px; }
+.user b { display: block; }
+.user small { color: var(--muted); }
+
+.content { padding: 24px 14px 40px 28px; }
+
+/* ---------- Заголовок страницы ---------- */
+.page-head {
+    display: flex; justify-content: space-between; align-items: flex-end; gap: 16px;
+    margin-bottom: 22px; flex-wrap: wrap; animation: rise .6s ease backwards;
+}
+.page-head h1 {
+    margin: 0; font-size: 28px;
+    background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.page-head p { margin: 6px 0 0; color: var(--muted); }
+
+/* ---------- Карточки ---------- */
+.card {
+    border-radius: 22px; padding: 20px; margin-bottom: 20px;
+    position: relative; overflow: hidden;
+    animation: rise .7s cubic-bezier(.2, .8, .2, 1) backwards;
+    transition: transform .35s, box-shadow .35s;
+}
+/* блик «жидкого стекла» */
+.card::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
+    background: linear-gradient(120deg, rgba(255, 255, 255, .7) 0%, rgba(255, 255, 255, 0) 35%,
+                                rgba(255, 255, 255, 0) 65%, rgba(255, 255, 255, .35) 100%);
+    opacity: .6;
+}
+.card::after {
+    content: ""; position: absolute; top: 0; left: -60%; width: 40%; height: 100%; pointer-events: none;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .55), transparent);
+    transform: skewX(-20deg); transition: left .8s;
+}
+.card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(124, 58, 237, .18), inset 0 1px 0 #fff; }
+.card:hover::after { left: 130%; }
+.card > * { position: relative; z-index: 1; }
+
+/* карточки появляются по очереди */
+.cards .card:nth-child(2), .grid-3 .card:nth-child(2), .grid-2 .card:nth-child(2) { animation-delay: .08s; }
+.cards .card:nth-child(3), .grid-3 .card:nth-child(3) { animation-delay: .16s; }
+.cards .card:nth-child(4) { animation-delay: .24s; }
+
+.card-title {
+    display: flex; justify-content: space-between; align-items: center; gap: 10px;
+    font-weight: 700; font-size: 15px; margin-bottom: 16px;
+}
+.card-title a { color: var(--main); font-size: 13px; font-weight: 600; }
+
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+
+.stat { display: flex; justify-content: space-between; align-items: flex-start; }
+.stat small { color: var(--muted); font-weight: 600; }
+.stat b { display: block; font-size: 30px; margin: 6px 0; }
+.stat span { color: var(--green); font-size: 13px; font-weight: 600; }
+.stat-icon {
+    font-size: 24px;
+    width: 50px; height: 50px; border-radius: 16px; color: #fff; background: var(--grad);
+    display: grid; place-items: center; box-shadow: 0 8px 18px rgba(124, 58, 237, .3);
+    transition: transform .4s;
+}
+.cards .card:nth-child(2) .stat-icon { background: linear-gradient(135deg, #06b6d4, #3b82f6); }
+.cards .card:nth-child(3) .stat-icon { background: linear-gradient(135deg, #ec4899, #f59e0b); }
+.cards .card:nth-child(4) .stat-icon { background: linear-gradient(135deg, #10b981, #06b6d4); }
+.stat:hover .stat-icon { transform: rotate(-10deg) scale(1.12); }
+
+.grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+.grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 20px; }
+
+/* ---------- Кнопки ---------- */
+.btn, .btn-outline {
+    border-radius: 14px; padding: 10px 18px; font-weight: 700; cursor: pointer; font-size: 14px;
+    font-family: inherit; display: inline-block; text-align: center; transition: .25s;
+    position: relative; overflow: hidden;
+}
+.btn {
+    background: var(--grad); background-size: 200% 200%; color: #fff; border: 0;
+    box-shadow: 0 8px 20px rgba(124, 58, 237, .3);
+}
+.btn:hover { background-position: 100% 0; transform: translateY(-2px); box-shadow: 0 12px 26px rgba(236, 72, 153, .35); }
+.btn:active, .btn-outline:active { transform: scale(.96); }
+.btn-outline {
+    background: rgba(255, 255, 255, .6); color: var(--main); border: 1px solid var(--glass-border);
+}
+.btn-outline:hover { background: #fff; transform: translateY(-2px); }
+.card > .btn-outline { display: block; margin-top: 16px; }
+.small { padding: 6px 10px; }
+
+input[type=text] {
+    border: 1px solid var(--glass-border); border-radius: 12px; padding: 10px 12px;
+    font-family: inherit; font-size: 14px; outline: none; background: rgba(255, 255, 255, .6);
+    color: var(--text); transition: .25s;
+}
+input[type=text]:focus { background: #fff; box-shadow: 0 0 0 4px rgba(124, 58, 237, .15); }
+
+/* ---------- Сообщения ---------- */
+.alert {
+    padding: 12px 16px; border-radius: 14px; margin-bottom: 16px; font-weight: 600;
+    backdrop-filter: var(--blur); border: 1px solid var(--glass-border);
+    animation: slideDown .5s ease backwards;
+}
+.alert.success { background: rgba(16, 185, 129, .15); color: #047857; }
+.alert.error   { background: rgba(244, 63, 94, .15); color: #be123c; }
+
+/* ---------- Круговая диаграмма ---------- */
+.donut-row { display: flex; align-items: center; gap: 22px; }
+.donut {
+    width: 150px; height: 150px; border-radius: 50%; flex: none; display: grid; place-items: center;
+    animation: spinIn 1.2s cubic-bezier(.2, .8, .2, 1) backwards;
+    box-shadow: 0 10px 30px rgba(124, 58, 237, .25);
+}
+.donut-hole {
+    width: 100px; height: 100px; border-radius: 50%;
+    background: rgba(255, 255, 255, .8); backdrop-filter: var(--blur);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.donut-hole b { font-size: 24px; color: var(--main); }
+.donut-hole small { color: var(--muted); font-size: 12px; }
+.legend { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+.legend li { display: flex; gap: 8px; align-items: flex-start; }
+.legend i { width: 10px; height: 10px; border-radius: 3px; margin-top: 4px; flex: none; }
+.legend small { display: block; color: var(--muted); }
+
+/* ---------- Список людей ---------- */
+.people { list-style: none; padding: 0; margin: 0; }
+.people li {
+    display: flex; align-items: center; gap: 12px; padding: 8px 6px; border-radius: 12px;
+    border-bottom: 1px solid rgba(124, 58, 237, .08); transition: .25s;
+    animation: rise .6s ease backwards;
+}
+.people li:nth-child(2) { animation-delay: .1s; }
+.people li:nth-child(3) { animation-delay: .2s; }
+.people li:nth-child(4) { animation-delay: .3s; }
+.people li:nth-child(5) { animation-delay: .4s; }
+.people li:hover { background: rgba(255, 255, 255, .6); transform: translateX(4px); }
+.people li:last-child { border-bottom: 0; }
+.place { color: var(--muted); width: 14px; font-weight: 700; }
+.people li:nth-child(1) .place { color: #f59e0b; }
+.who { flex: 1; }
+.who b { display: block; }
+.who small { color: var(--muted); }
+.gpa { text-align: right; }
+.gpa b { display: block; color: var(--main); }
+.gpa small { color: var(--muted); font-size: 11px; }
+
+.avatar {
+    width: 36px; height: 36px; border-radius: 50%; background: var(--grad); color: #fff;
+    display: grid; place-items: center; font-weight: 700; flex: none;
+    box-shadow: 0 4px 12px rgba(124, 58, 237, .3);
+}
+.avatar.big { width: 52px; height: 52px; font-size: 20px; }
+
+/* ---------- Полоски ---------- */
+.bar-row { margin-bottom: 14px; }
+.bar-label { display: flex; justify-content: space-between; margin-bottom: 6px; }
+.bar { height: 10px; background: rgba(124, 58, 237, .1); border-radius: 99px; overflow: hidden; }
+.bar div {
+    height: 100%; border-radius: 99px;
+    background: linear-gradient(90deg, #7c3aed, #ec4899, #06b6d4); background-size: 200% 100%;
+    animation: grow 1.2s cubic-bezier(.2, .8, .2, 1) both, shimmer 3s linear infinite;
+}
+
+.best {
+    background: linear-gradient(135deg, rgba(124, 58, 237, .12), rgba(236, 72, 153, .12));
+    border: 1px solid var(--glass-border); border-radius: 16px; padding: 14px; margin-top: 18px;
+    display: flex; justify-content: space-between; align-items: center;
+}
+.best small { display: block; color: var(--muted); font-size: 12px; }
+.best b { display: block; margin: 2px 0; }
+.pill {
+    background: var(--grad); color: #fff; border-radius: 10px; padding: 5px 10px;
+    font-weight: 700; font-size: 13px; white-space: nowrap; box-shadow: 0 4px 12px rgba(236, 72, 153, .3);
+}
+
+/* ---------- Журнал ---------- */
+.sort { display: flex; align-items: center; gap: 6px; }
+.sort span { color: var(--muted); margin-right: 4px; }
+.sort a {
+    padding: 8px 14px; border-radius: 12px; font-weight: 600; color: #4c4673; transition: .25s;
+    background: var(--glass); backdrop-filter: var(--blur); border: 1px solid var(--glass-border);
+}
+.sort a:hover { background: #fff; }
+.sort a.on { background: var(--grad); color: #fff; border-color: transparent; box-shadow: 0 6px 16px rgba(124, 58, 237, .3); }
+
+.found { display: flex; align-items: center; gap: 14px; }
+
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th {
+    color: var(--muted); font-weight: 700; font-size: 12px; text-transform: uppercase;
+    padding: 10px 6px; border-bottom: 1px solid rgba(124, 58, 237, .12); white-space: nowrap; text-align: center;
+}
+th a { transition: .2s; }
+th a:hover, th a.on { color: var(--main); }
+td { padding: 6px; border-bottom: 1px solid rgba(124, 58, 237, .08); text-align: center; transition: background .25s; }
+tr:hover td { background: rgba(255, 255, 255, .55); }
+tr.highlight td { background: rgba(236, 72, 153, .12); animation: flash 1.5s ease 2; }
+.left { text-align: left; }
+.muted { color: var(--muted); font-weight: 400; }
+.gpa-cell { font-weight: 800; color: var(--main); }
+
+.student { display: flex; align-items: center; gap: 10px; }
+input.name { border-color: transparent; background: transparent; font-weight: 600; width: 150px; padding: 6px 8px; }
+input.name:hover, input.name:focus { border-color: var(--glass-border); background: rgba(255, 255, 255, .7); }
+
+.grade {
+    width: 44px; padding: 7px 2px; text-align: center; font-size: 15px; font-weight: 800;
+    border: 1px solid var(--glass-border); border-radius: 10px; font-family: inherit; outline: none;
+    background: rgba(255, 255, 255, .6); color: var(--text); transition: transform .2s, box-shadow .2s;
+}
+.grade:focus { transform: scale(1.15); box-shadow: 0 0 0 4px rgba(124, 58, 237, .2); background: #fff; }
+.grade.g5 { color: var(--main); background: rgba(124, 58, 237, .12); }
+.grade.g4 { color: #db2777; background: rgba(236, 72, 153, .1); }
+.grade.g3 { color: #0891b2; background: rgba(6, 182, 212, .12); }
+.grade.g2, .grade.g1 { color: var(--red); background: rgba(244, 63, 94, .12); }
+
+.badge { padding: 4px 10px; border-radius: 99px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+.badge.excellent { background: rgba(16, 185, 129, .15); color: #047857; }
+.badge.good      { background: rgba(124, 58, 237, .12); color: var(--main); }
+.badge.ok        { background: rgba(245, 158, 11, .15); color: #b45309; }
+.badge.low       { background: rgba(244, 63, 94, .15); color: #be123c; }
+.badge.none      { background: rgba(0, 0, 0, .05); color: var(--muted); }
+
+.del {
+    border: 0; background: transparent; color: #b8b3d6; cursor: pointer; padding: 2px 4px;
+    border-radius: 8px; font-size: 15px; vertical-align: middle; transition: .2s;
+}
+.del:hover { color: #fff; background: var(--red); transform: rotate(-8deg); }
+
+.row-end { display: flex; justify-content: flex-end; margin-top: 14px; }
+.add { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+.add form { display: flex; gap: 8px; }
+form.add input { flex: 1; max-width: 360px; }
+
+/* ---------- Тексеру ---------- */
+.check-row { display: flex; gap: 12px; padding: 9px 0; border-bottom: 1px solid rgba(124, 58, 237, .08); }
+.check-row:last-child { border-bottom: 0; }
+.check-row b { display: block; }
+.check-row small { color: var(--muted); }
+.mark {
+    width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center;
+    font-weight: 800; flex: none; animation: pop .5s ease both;
+}
+.mark.yes { background: var(--green); color: #fff; }
+.mark.no  { background: var(--red); color: #fff; }
+code { background: rgba(124, 58, 237, .1); color: var(--main); padding: 1px 6px; border-radius: 6px; font-size: 12px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+    background: rgba(255, 255, 255, .7); color: var(--main); border: 1px solid var(--glass-border);
+    padding: 5px 10px; border-radius: 10px; font-weight: 700; font-size: 13px; transition: .2s;
+}
+.chip:hover { background: var(--grad); color: #fff; transform: translateY(-2px); }
+.chip.no { background: rgba(244, 63, 94, .15); color: #be123c; }
+.plan li { margin: 8px 0; }
+
+/* ---------- Анимации ---------- */
+@keyframes rise       { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes slideRight { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: none; } }
+@keyframes slideDown  { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
+@keyframes spinIn     { from { opacity: 0; transform: rotate(-180deg) scale(.6); } to { opacity: 1; transform: none; } }
+@keyframes grow       { from { width: 0; } }
+@keyframes shimmer    { to { background-position: 200% 0; } }
+@keyframes pop        { 0% { transform: scale(0); } 70% { transform: scale(1.2); } 100% { transform: scale(1); } }
+@keyframes flash      { 50% { background: rgba(236, 72, 153, .28); } }
+@keyframes glow       { 50% { box-shadow: 0 6px 26px rgba(236, 72, 153, .6); } }
+@keyframes ring       { 0%, 90%, 100% { transform: rotate(0); } 93% { transform: rotate(14deg); } 96% { transform: rotate(-14deg); } }
+
+@media (max-width: 900px) {
+    .sidebar { display: none; }
+    .date { display: none; }
+    .content { padding: 20px 14px; }
+}
+
+/* ---------- Приветственная страница ---------- */
+.welcome-page { display: block; }
+.welcome { max-width: 1050px; margin: 0 auto; padding: 50px 20px 60px; }
+
+.hero-card { text-align: center; padding: 50px 30px 40px; border-radius: 32px; }
+.hero-logo {
+    width: 90px; height: 90px; margin: 0 auto 18px; border-radius: 28px; background: var(--grad);
+    color: #fff; font-size: 34px; font-weight: 900; display: grid; place-items: center;
+    animation: glow 3s ease-in-out infinite, bounce 1s cubic-bezier(.2, .8, .2, 1) backwards;
+}
+.tag {
+    display: inline-block; padding: 6px 14px; border-radius: 99px; font-weight: 700; font-size: 13px;
+    color: var(--main); background: rgba(255, 255, 255, .7); border: 1px solid var(--glass-border);
+}
+.presents { margin: 18px 0 0; font-size: 18px; color: #4c4673; animation: rise .8s .2s ease backwards; }
+.hero-title {
+    margin: 6px 0 10px; font-size: 68px; font-weight: 900; letter-spacing: -1px;
+    background: linear-gradient(90deg, #7c3aed, #ec4899, #06b6d4, #7c3aed); background-size: 300% 100%;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: rise .8s .35s ease backwards, shimmer 6s linear infinite;
+}
+.hero-sub { max-width: 560px; margin: 0 auto; color: var(--muted); font-size: 16px; animation: rise .8s .5s ease backwards; }
+
+.hero-stats {
+    display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin: 30px 0;
+    animation: rise .8s .65s ease backwards;
+}
+.hero-stats div {
+    min-width: 120px; padding: 14px 18px; border-radius: 18px;
+    background: rgba(255, 255, 255, .6); border: 1px solid var(--glass-border);
+}
+.hero-stats b { display: block; font-size: 28px; color: var(--main); }
+.hero-stats small { color: var(--muted); font-weight: 600; }
+
+.hero-buttons { display: flex; justify-content: center; gap: 12px; animation: rise .8s .8s ease backwards; }
+.big { padding: 14px 28px; font-size: 16px; border-radius: 16px; }
+
+.team-title { text-align: center; margin: 40px 0 20px; font-size: 24px; animation: rise .8s .9s ease backwards; }
+.team { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; }
+.member { text-align: center; padding: 26px 18px; }
+.team .member:nth-child(1) { animation-delay: 1s; }
+.team .member:nth-child(2) { animation-delay: 1.1s; }
+.team .member:nth-child(3) { animation-delay: 1.2s; }
+.team .member:nth-child(4) { animation-delay: 1.3s; }
+.member b { display: block; font-size: 17px; margin-bottom: 4px; }
+.member i { display: block; color: var(--main); font-style: normal; font-weight: 600; margin-bottom: 6px; }
+.member small { color: var(--muted); line-height: 1.5; }
+.member-icon {
+    width: 64px; height: 64px; margin: 0 auto 14px; border-radius: 20px; font-size: 30px;
+    display: grid; place-items: center; background: rgba(255, 255, 255, .7); border: 1px solid var(--glass-border);
+    transition: transform .4s;
+}
+.member:hover .member-icon { transform: rotate(-10deg) scale(1.15); }
+.step {
+    position: absolute !important; top: 14px; left: 14px; width: 26px; height: 26px; border-radius: 50%;
+    background: var(--grad); color: #fff; font-weight: 800; font-size: 13px; display: grid; place-items: center;
+}
+
+@keyframes bounce { from { opacity: 0; transform: scale(.3) rotate(-30deg); } }
+
+@media (max-width: 700px) { .hero-title { font-size: 44px; } }
+.stars { color: #f59e0b; letter-spacing: 1px; }
+
+/* ---------- Сүзгілер (фильтры) ---------- */
+.filters { display: flex; align-items: flex-end; gap: 14px; flex-wrap: wrap; }
+.filters label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: 13px; color: var(--muted); }
+select {
+    border: 1px solid var(--glass-border); border-radius: 12px; padding: 10px 12px; min-width: 150px;
+    font-family: inherit; font-size: 14px; color: var(--text); background: rgba(255, 255, 255, .7); outline: none;
+}
+select:focus { background: #fff; box-shadow: 0 0 0 4px rgba(124, 58, 237, .15); }
+
+#app { display: flex; flex: 1; min-width: 0; }
+.welcome-page #app { display: block; }
+@media (max-width: 900px) {
+    #app { flex-direction: column; }
+    .sidebar { display: flex; position: static; height: auto; width: auto; margin: 12px 14px 0; gap: 10px; padding: 12px; }
+    .sidebar nav { flex-direction: row; flex-wrap: wrap; }
+    .sidebar nav a { padding: 8px; }
+    .sidebar-card { display: none; }
+    .grid-2, .grid-3 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); }
+    .page-head { flex-wrap: wrap; }
+}
+@media (max-width: 480px) {
+    .topbar { padding: 10px; gap: 8px; }
+    .top-right .bell, .top-right .user { display: none; }
+    .hero-card { padding-inline: 16px; }
+    .hero-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .donut-row { flex-wrap: wrap; }
+}
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+    <noscript>Smart College үшін JavaScript қосыңыз.</noscript>
+    <script type="application/json" id="initial-data">
+{
+    "1 курс": {
+        "Asel Aiym": {
+            "Математика": 5,
+            "Физика": 4,
+            "Информатика": 5,
+            "Қазақ тілі": 5
+        },
+        "Dias Serikov": {
+            "Математика": 3,
+            "Физика": 4,
+            "Информатика": 4,
+            "Қазақ тілі": 3
+        },
+        "Aruzhan Bekova": {
+            "Математика": 4,
+            "Физика": 5,
+            "Информатика": 5,
+            "Қазақ тілі": 4
+        },
+        "Yerlan Abenov": {
+            "Математика": 2,
+            "Физика": 3,
+            "Информатика": 3,
+            "Қазақ тілі": 4
+        },
+        "Bekzat Orazov": {
+            "Математика": 4,
+            "Физика": 4,
+            "Информатика": 5,
+            "Қазақ тілі": 4
+        },
+        "Kamila Yesenova": {
+            "Математика": 5,
+            "Физика": 5,
+            "Информатика": 4,
+            "Қазақ тілі": 4
+        },
+        "Nursultan Ibrayev": {
+            "Математика": 3,
+            "Физика": 3,
+            "Информатика": 4,
+            "Қазақ тілі": 3
+        },
+        "Zhansaya Tolegen": {
+            "Математика": 4,
+            "Физика": 5,
+            "Информатика": 4,
+            "Қазақ тілі": 5
+        }
+    },
+    "2 курс": {
+        "Madina Sapar": {
+            "PHP": 5,
+            "Деректер қоры": 5,
+            "Веб-дизайн": 4,
+            "Ағылшын тілі": 5
+        },
+        "Nurlan Akhmetov": {
+            "PHP": 4,
+            "Деректер қоры": 3,
+            "Веб-дизайн": 4,
+            "Ағылшын тілі": 4
+        },
+        "Aigerim Kairatova": {
+            "PHP": 5,
+            "Деректер қоры": 4,
+            "Веб-дизайн": 5,
+            "Ағылшын тілі": 4
+        },
+        "Aliya Mukhametova": {
+            "PHP": 4,
+            "Деректер қоры": 5,
+            "Веб-дизайн": 5,
+            "Ағылшын тілі": 5
+        },
+        "Ruslan Baimukhanov": {
+            "PHP": 3,
+            "Деректер қоры": 4,
+            "Веб-дизайн": 3,
+            "Ағылшын тілі": 4
+        },
+        "Togzhan Amirova": {
+            "PHP": 5,
+            "Деректер қоры": 4,
+            "Веб-дизайн": 4,
+            "Ағылшын тілі": 5
+        },
+        "Daniyar Seitkali": {
+            "PHP": 2,
+            "Деректер қоры": 3,
+            "Веб-дизайн": 3,
+            "Ағылшын тілі": 3
+        }
+    },
+    "3 курс": {
+        "Temirlan Musin": {
+            "Алгоритмдер": 4,
+            "JavaScript": 5,
+            "Желілер": 4,
+            "Дипломдық жоба": 5
+        },
+        "Dana Omarova": {
+            "Алгоритмдер": 3,
+            "JavaScript": 3,
+            "Желілер": 4,
+            "Дипломдық жоба": 3
+        },
+        "Arman Zhaksylykov": {
+            "Алгоритмдер": 5,
+            "JavaScript": 4,
+            "Желілер": 5,
+            "Дипломдық жоба": 5
+        },
+        "Saule Kenzhebayeva": {
+            "Алгоритмдер": 5,
+            "JavaScript": 5,
+            "Желілер": 4,
+            "Дипломдық жоба": 5
+        },
+        "Askar Zhumabek": {
+            "Алгоритмдер": 4,
+            "JavaScript": 4,
+            "Желілер": 3,
+            "Дипломдық жоба": 4
+        },
+        "Inkar Nurpeisova": {
+            "Алгоритмдер": 4,
+            "JavaScript": 5,
+            "Желілер": 5,
+            "Дипломдық жоба": 4
+        },
+        "Miras Abdrakhmanov": {
+            "Алгоритмдер": 3,
+            "JavaScript": 2,
+            "Желілер": 3,
+            "Дипломдық жоба": 3
+        }
+    }
+}
+    </script>
+    <script>
+// Деректер құрылымы: курс → студент → пән → баға.
+const storageKey = 'smart-college-html-v1';
+const byName = () => Object.create(null);
+const parseData = (json) => JSON.parse(json, (_, value) =>
+    value && typeof value === 'object' && !Array.isArray(value)
+        ? Object.assign(byName(), value)
+        : value
+);
+const defaultCollege = () => parseData(document.getElementById('initial-data').textContent);
+
+function loadCollege() {
+    try {
+        const saved = localStorage.getItem(storageKey);
+        if (saved) return parseData(saved);
+    } catch {
+        // Браузер жергілікті жадты бұғаттаса, бастапқы деректерді ашамыз.
+    }
+    return defaultCollege();
+}
+
+let college = loadCollege();
+const app = document.getElementById('app');
+
+function escapeHtml(value) {
+    const characters = {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'};
+    return String(value).replace(/[&<>"']/g, (character) => characters[character]);
+}
+
+function formatName(name) {
+    return name.trim().toLowerCase().replace(/(^|\s)(\p{L})/gu, (_, space, letter) => space + letter.toUpperCase());
+}
+
+function formatTitle(title) {
+    return title.trim().replace(/^\p{Ll}/u, (letter) => letter.toUpperCase());
+}
+
+const initial = (name) => escapeHtml([...name][0]?.toUpperCase() ?? '');
+const formatNumber = (value) => value.toFixed(2);
+const sum = (numbers) => numbers.reduce((total, number) => total + number, 0);
+const average = (numbers) => numbers.length ? sum(numbers) / numbers.length : 0;
+const realGrades = (grades) => Object.values(grades).filter((grade) => grade !== null);
+const studentSum = (grades) => sum(realGrades(grades));
+const studentAverage = (grades) => average(realGrades(grades));
+const toGpa = (value) => value * 4 / 5;
+const courseGrades = (students) => Object.values(students).flatMap(realGrades);
+const courseAverage = (students) => average(courseGrades(students));
+const courseSubjects = (students) => Object.keys(Object.values(students)[0] ?? {});
+const isValidGrade = (grade) => Number.isInteger(grade) && grade >= 1 && grade <= 5;
+const isValidName = (name) => [...name].length >= 3;
+const stars = (value) => '★'.repeat(Math.round(value)) + '☆'.repeat(5 - Math.round(value));
+
+function status(value) {
+    if (value >= 4.5) return ['Үздік', 'excellent'];
+    if (value >= 3.5) return ['Жақсы', 'good'];
+    if (value >= 2.5) return ['Орташа', 'ok'];
+    if (value > 0) return ['Төмен', 'low'];
+    return ['Баға жоқ', 'none'];
+}
+
+function badge(value) {
+    const [label, style] = status(value);
+    return `<span class="badge ${style}">${label}</span>`;
+}
+
+function collegeStats() {
+    const courses = Object.values(college);
+    const grades = courses.flatMap(courseGrades);
+    return {
+        courses: courses.length,
+        students: sum(courses.map((students) => Object.keys(students).length)),
+        subjects: sum(courses.map((students) => courseSubjects(students).length)),
+        grades,
+        avg: average(grades)
+    };
+}
+
+function sortedNames(students, sort) {
+    const names = Object.keys(students);
+    if (sort === 'name') return names.sort();
+    return names.sort((first, second) => {
+        const score = (name) => {
+            if (sort === 'gpa') return studentAverage(students[name]);
+            if (sort === 'sum') return studentSum(students[name]);
+            return students[name][sort] ?? 0;
+        };
+        return score(second) - score(first);
+    });
+}
+
+function findStudent(data, query) {
+    const search = query.trim().toLowerCase();
+    if (!search) return null;
+    for (const [course, students] of Object.entries(data)) {
+        const names = Object.keys(students);
+        const name = names.find((name) => name.toLowerCase() === search)
+            ?? names.find((name) => name.toLowerCase().includes(search));
+        if (name) return {course, name, grades: students[name]};
+    }
+    return null;
+}
+
+function route(page, params = {}) {
+    return '#' + new URLSearchParams({page, ...params}).toString();
+}
+
+function statCard(label, value, note, icon) {
+    return `<div class="card stat"><div><small>${label}</small><b>${value}</b><span>${note}</span></div><div class="stat-icon">${icon}</div></div>`;
+}
+
+function renderWelcome(stats) {
+    const team = [
+        ['🎨', 'Дизайнер', 'Сайттың көрінісі: беттер, түстер, «сұйық шыны» эффектісі, анимациялар'],
+        ['💻', 'Программист', 'Логика: функциялар, есептеу, іздеу, сұрыптау, формалар'],
+        ['📊', 'Деректер аналитигі', '3D массив: курстар → студенттер → пәндер мен бағалар'],
+        ['✅', 'Тестировщик', 'Тексеру: тесттер және қорғау жоспары']
+    ];
+    return `<main class="main welcome">
+        <section class="card hero-card">
+            <div class="hero-logo">SC</div>
+            <span class="tag">1-команда</span>
+            <p class="presents">«Код Батырлары» командасы ұсынады</p>
+            <h1 class="hero-title">Smart College</h1>
+            <p class="hero-sub">Колледжді басқару жүйесі — студенттердің бағалары, топтары және пәндері бір электрондық журналда</p>
+            <div class="hero-stats">
+                <div><b>${stats.students}</b><small>студент</small></div>
+                <div><b>${stats.courses}</b><small>курс</small></div>
+                <div><b>${stats.subjects}</b><small>пән</small></div>
+                <div><b>${formatNumber(toGpa(stats.avg))}</b><small>орташа GPA</small></div>
+            </div>
+            <div class="hero-buttons">
+                <a href="${route('dashboard')}" class="btn big">Жүйеге кіру →</a>
+                <a href="${route('test')}" class="btn-outline big">Тексеру</a>
+            </div>
+        </section>
+        <h2 class="team-title">Біздің команда</h2>
+        <div class="team">${team.map(([icon, role, description], index) => `
+            <div class="card member"><span class="step">${index + 1}</span><div class="member-icon">${icon}</div>
+                <b>${role}</b><small>${description}</small>
+            </div>`).join('')}
+        </div>
+    </main>`;
+}
+
+function renderLayout(page, query, content, messages) {
+    const navigation = [['dashboard', '🏠 Басты бет'], ['journal', '📒 Журнал'], ['test', '✅ Тексеру']];
+    return `<aside class="sidebar">
+        <a href="${route('welcome')}" class="brand">
+            <div class="brand-logo">SC</div>
+            <div><b>Smart College</b><small>Колледжді басқару</small></div>
+        </a>
+        <nav>${navigation.map(([key, label]) => `
+            <a href="${route(key)}" ${key === page ? 'class="active" aria-current="page"' : ''}>${label}</a>
+        `).join('')}</nav>
+        <div class="sidebar-card"><b>«Код Батырлары»</b><small>1-команда</small></div>
+    </aside>
+    <main class="main">
+        <header class="topbar">
+            <form class="top-search" data-action="search">
+                🔍 <input type="text" name="q" value="${escapeHtml(query)}" aria-label="Студентті іздеу" placeholder="Студентті аты бойынша іздеу...">
+            </form>
+            <div class="top-right">
+                <span class="date">${new Date().toLocaleDateString('ru-RU')}</span>
+                <span class="bell">🔔</span>
+                <div class="user"><div class="avatar">A</div><div><b>Admin</b><small>Әкімші</small></div></div>
+            </div>
+        </header>
+        <div class="content">
+            ${messages.map(([type, message]) => `<div class="alert ${type}" role="status">${escapeHtml(message)}</div>`).join('')}
+            ${content}
+        </div>
+    </main>`;
+}
+
+function renderDashboard(stats) {
+    const distribution = [
+        ['#7c3aed', '5 — өте жақсы', stats.grades.filter((grade) => grade === 5).length],
+        ['#ec4899', '4 — жақсы', stats.grades.filter((grade) => grade === 4).length],
+        ['#06b6d4', '3 — орташа', stats.grades.filter((grade) => grade === 3).length],
+        ['#f59e0b', '2 және төмен', stats.grades.filter((grade) => grade <= 2).length]
+    ];
+    let start = 0;
+    const segments = distribution.map(([color, , count]) => {
+        const end = start + (stats.grades.length ? count / stats.grades.length * 100 : 0);
+        const segment = `${color} ${start}% ${end}%`;
+        start = end;
+        return segment;
+    });
+    const chart = stats.grades.length ? `conic-gradient(${segments.join(', ')})` : '#e9e4f3';
+    const quality = stats.grades.length ? 100 * (distribution[0][2] + distribution[1][2]) / stats.grades.length : 0;
+    const top = Object.entries(college).flatMap(([course, students]) =>
+        Object.entries(students).map(([name, grades]) => ({name, course, avg: studentAverage(grades)}))
+    ).sort((first, second) => second.avg - first.avg).slice(0, 5);
+    const best = top[0];
+    const gpaLink = route('journal', {sort: 'gpa'});
+    return `<div class="page-head">
+        <div><h1>Басты бет</h1><p>Қош келдіңіз! Smart College колледжіндегі қазіргі жағдай.</p></div>
+        <a href="${route('journal')}" class="btn">Журналды ашу</a>
+    </div>
+    <div class="cards">
+        ${statCard('Студенттер', stats.students, stats.courses + ' курс бойынша', '👩‍🎓')}
+        ${statCard('Курстар', stats.courses, stats.subjects + ' пән оқытылады', '📚')}
+        ${statCard('Барлық бағалар', stats.grades.length, 'қосындысы: ' + sum(stats.grades), '📊')}
+        ${statCard('Орташа GPA', formatNumber(toGpa(stats.avg)), 'орташа балл: ' + formatNumber(stats.avg), '⭐')}
+    </div>
+    <div class="grid-3">
+        <div class="card">
+            <div class="card-title">Бағалар үлесі</div>
+            <div class="donut-row">
+                <div class="donut" style="background: ${chart}">
+                    <div class="donut-hole"><b>${Math.round(quality)}%</b><small>білім сапасы</small></div>
+                </div>
+                <ul class="legend">${distribution.map(([color, label, count]) => `
+                    <li><i style="background: ${color}"></i><div>${label}<small>${count} баға</small></div></li>
+                `).join('')}</ul>
+            </div>
+            <a href="${route('journal', {sort: 'sum'})}" class="btn-outline">Бағалар бойынша сұрыптау</a>
+        </div>
+        <div class="card">
+            <div class="card-title">Үздік студенттер <a href="${gpaLink}">Барлығы</a></div>
+            <ul class="people">${top.map(({name, course, avg}, index) => `
+                <li><span class="place">${index + 1}</span><div class="avatar">${initial(name)}</div>
+                    <div class="who"><b>${escapeHtml(name)}</b><small>${escapeHtml(course)}</small></div>
+                    <div class="gpa"><b>${formatNumber(toGpa(avg))}</b><small>GPA</small></div>
+                </li>`).join('')}</ul>
+            <a href="${gpaLink}" class="btn-outline">GPA бойынша рейтинг</a>
+        </div>
+        <div class="card">
+            <div class="card-title">Курстар көрсеткіші</div>
+            ${Object.entries(college).map(([course, students]) => {
+                const avg = courseAverage(students);
+                return `<div class="bar-row">
+                    <div class="bar-label"><span>${escapeHtml(course)}</span><b>${formatNumber(avg)}</b></div>
+                    <div class="bar"><div style="width: ${avg / 5 * 100}%"></div></div>
+                </div>`;
+            }).join('')}
+            ${best ? `<div class="best">
+                <div><small>Үздік студент</small><b>${escapeHtml(best.name)}</b>
+                    <small>${escapeHtml(best.course)} <span class="stars">${stars(best.avg)}</span></small></div>
+                <span class="pill">GPA ${formatNumber(toGpa(best.avg))}</span>
+            </div>` : ''}
+        </div>
+    </div>`;
+}
+
+function renderJournal(params) {
+    const filters = {
+        f_course: params.get('f_course') ?? '',
+        f_subject: params.get('f_subject') ?? '',
+        min_gpa: Number(params.get('min_gpa')) || 0,
+        q: params.get('q') ?? ''
+    };
+    const sort = params.get('sort') ?? 'name';
+    const found = findStudent(college, filters.q);
+    const subjects = [...new Set(Object.values(college).flatMap(courseSubjects))].sort();
+    const sortLink = (key, label) => `<a href="${route('journal', {...filters, sort: key})}"
+        class="${sort === key ? 'on' : ''}">${escapeHtml(label)}</a>`;
+    const options = (values, selected) => values.map((value) => `
+        <option value="${escapeHtml(value)}" ${value === selected ? 'selected' : ''}>${escapeHtml(value)}</option>
+    `).join('');
+
+    return `<div class="page-head">
+        <div><h1>Журнал</h1>
+            <p>Бағаны немесе аты-жөнін өзгертіп, «Сақтау» басыңыз. Пән атауын бассаңыз — сол пән бойынша сұрыпталады.</p>
+        </div>
+        <div class="sort"><span>Сұрыптау:</span> ${sortLink('name', 'Аты')} ${sortLink('gpa', 'GPA')} ${sortLink('sum', 'Бағалар')}</div>
+    </div>
+    <form class="card filters" data-action="filter">
+        <input type="hidden" name="sort" value="${escapeHtml(sort)}">
+        <input type="hidden" name="q" value="${escapeHtml(filters.q)}">
+        <label>Курс <select name="f_course"><option value="">Барлығы</option>
+            ${options(Object.keys(college), filters.f_course)}</select></label>
+        <label>Пән <select name="f_subject"><option value="">Барлығы</option>
+            ${options(subjects, filters.f_subject)}</select></label>
+        <label>GPA кемінде <select name="min_gpa"><option value="0">Барлығы</option>
+            ${[2, 2.5, 3, 3.5].map((level) => `<option value="${level}" ${level === filters.min_gpa ? 'selected' : ''}>${formatNumber(level)}</option>`).join('')}
+        </select></label>
+        <button class="btn">Сүзу</button>
+        <a href="${route('journal')}" class="btn-outline">Тазалау</a>
+    </form>
+    ${renderSearchResult(found, filters.q, sort)}
+    ${Object.entries(college).map(([course, students], index) => {
+        if (filters.f_course && course !== filters.f_course) return '';
+        const courseColumns = courseSubjects(students);
+        if (filters.f_subject && !courseColumns.includes(filters.f_subject)) return '';
+        const columns = filters.f_subject ? [filters.f_subject] : courseColumns;
+        const visibleStudents = Object.fromEntries(Object.entries(students).filter(
+            ([, grades]) => toGpa(studentAverage(grades)) >= filters.min_gpa
+        ));
+        const foundName = found?.course === course ? found.name : null;
+        return renderCourse(course, visibleStudents, columns, sort, sortLink, foundName, index);
+    }).join('')}
+    <div class="card add">
+        <form data-action="add_course">
+            <input type="text" name="name" placeholder="Жаңа курс, мысалы: 4 курс" aria-label="Жаңа курс" required>
+            <button class="btn">+ Курс</button>
+        </form>
+        <form data-action="reset"><button class="btn-outline">Бастапқы деректер</button></form>
+    </div>`;
+}
+
+function renderSearchResult(found, query, sort) {
+    if (!query) return '';
+    if (!found) return `<div class="alert error">«${escapeHtml(query)}» атты студент табылмады</div>`;
+    const {name, course, grades} = found;
+    const avg = studentAverage(grades);
+    return `<div class="card found">
+        <div class="avatar big">${initial(name)}</div>
+        <div class="who"><b>${escapeHtml(name)}</b>
+            <small><span class="stars">${stars(avg)}</span> ${escapeHtml(course)} · қосынды ${studentSum(grades)} · орташа ${formatNumber(avg)}</small>
+        </div>
+        ${badge(avg)} <span class="pill">GPA ${formatNumber(toGpa(avg))}</span>
+        <a href="${route('journal', {sort})}" class="btn-outline small" aria-label="Іздеуді тазалау">✕</a>
+    </div>`;
+}
+
+function renderCourse(course, students, columns, sort, sortLink, foundName, index) {
+    const courseName = escapeHtml(course);
+    const names = sortedNames(students, sort);
+    const avg = courseAverage(students);
+    const actions = ['delete_course', 'delete_student', 'delete_subject'];
+    return `<div class="card course">
+        <div class="card-title">${courseName}
+            <span class="muted">${names.length} студент · орташа ${formatNumber(avg)} · GPA ${formatNumber(toGpa(avg))}
+                <button class="del" form="delete_course-${index}" title="Курсты жою">🗑</button>
+            </span>
+        </div>
+        ${actions.map((action) => `<form id="${action}-${index}" data-action="${action}" data-course="${courseName}"></form>`).join('')}
+        ${names.length ? `<form data-action="save" data-course="${courseName}">
+            <div class="table-wrap"><table>
+                <thead><tr>
+                    <th>№</th><th class="left">Студент</th>
+                    ${columns.map((subject) => `<th>${sortLink(subject, subject)}
+                        <button class="del" form="delete_subject-${index}" name="name" value="${escapeHtml(subject)}" title="Пәнді жою">×</button>
+                    </th>`).join('')}
+                    <th>${sortLink('sum', 'Қосынды')}</th><th>Орташа</th>
+                    <th>${sortLink('gpa', 'GPA')}</th><th>Статус</th><th></th>
+                </tr></thead>
+                <tbody>${names.map((name, position) => {
+                    const grades = students[name];
+                    const studentAvg = studentAverage(grades);
+                    return `<tr class="${foundName === name ? 'highlight' : ''}" data-student="${escapeHtml(name)}">
+                        <td class="muted">${position + 1}</td>
+                        <td class="left"><div class="student"><div class="avatar">${initial(name)}</div>
+                            <input type="text" class="name" name="student_name" aria-label="Студенттің аты-жөні" value="${escapeHtml(name)}"></div></td>
+                        ${columns.map((subject) => `<td><input type="number" min="1" max="5" step="1"
+                            class="grade g${grades[subject] ?? 0}" data-subject="${escapeHtml(subject)}"
+                            aria-label="${escapeHtml(subject)}" value="${grades[subject] ?? ''}"></td>`).join('')}
+                        <td>${studentSum(grades)}</td><td>${formatNumber(studentAvg)}</td>
+                        <td class="gpa-cell">${formatNumber(toGpa(studentAvg))}</td><td>${badge(studentAvg)}</td>
+                        <td><button class="del" form="delete_student-${index}" name="name" value="${escapeHtml(name)}" title="Студентті жою">🗑</button></td>
+                    </tr>`;
+                }).join('')}</tbody>
+            </table></div>
+            <div class="row-end"><button class="btn">Сақтау</button></div>
+        </form>` : '<p class="muted">Студент табылмады.</p>'}
+        <div class="add">
+            <form data-action="add_student" data-course="${courseName}">
+                <input type="text" name="name" placeholder="Жаңа студенттің аты-жөні" aria-label="Жаңа студенттің аты-жөні" required>
+                <button class="btn-outline">+ Студент</button>
+            </form>
+            <form data-action="add_subject" data-course="${courseName}">
+                <input type="text" name="name" placeholder="Жаңа пән" aria-label="Жаңа пән" required>
+                <button class="btn-outline">+ Пән</button>
+            </form>
+        </div>
+    </div>`;
+}
+
+// Көрсетілген жолдардағы мәндерді ғана жаңартамыз.
+function saveCourse(students, form) {
+    const names = Object.keys(students);
+    const proposed = new Map(names.map((name) => [name, name]));
+    const rejected = new Set();
+    let invalidGrades = 0;
+    for (const row of form.querySelectorAll('[data-student]')) {
+        const originalName = row.dataset.student;
+        const name = formatName(row.querySelector('[name="student_name"]').value);
+        if (isValidName(name)) proposed.set(originalName, name);
+        else rejected.add(originalName);
+        for (const input of row.querySelectorAll('[data-subject]')) {
+            const value = input.value.trim();
+            if (value === '' && !input.validity.badInput) students[originalName][input.dataset.subject] = null;
+            else if (isValidGrade(Number(value))) students[originalName][input.dataset.subject] = Number(value);
+            else invalidGrades++;
+        }
+    }
+
+    // Қайталанған аттар бұрынғы атпен қалады.
+    let changed;
+    do {
+        const counts = new Map();
+        for (const name of proposed.values()) counts.set(name, (counts.get(name) ?? 0) + 1);
+        changed = false;
+        for (const [originalName, name] of proposed) {
+            if (name !== originalName && counts.get(name) > 1) {
+                proposed.set(originalName, originalName);
+                rejected.add(originalName);
+                changed = true;
+            }
+        }
+    } while (changed);
+
+    const updated = byName();
+    for (const name of names) updated[proposed.get(name)] = students[name];
+    return {students: updated, errors: rejected.size + invalidGrades};
+}
+
+function handleAction(form, data, submitter) {
+    const {action, course} = form.dataset;
+    const students = college[course];
+    const input = String(data.get('name') ?? '');
+    const success = (message) => ['success', message];
+    const error = (message) => ['error', message];
+
+    if (action === 'reset') {
+        college = defaultCollege();
+        return success('Бастапқы деректер қайтарылды');
+    }
+    if (action === 'add_course') {
+        const name = formatTitle(input);
+        if (!name || Object.hasOwn(college, name)) return error('Курс атауы бос немесе мұндай курс бар');
+        college[name] = byName();
+        return success('Курс қосылды: ' + name);
+    }
+    if (!students) return error('Курс табылмады');
+
+    switch (action) {
+        case 'add_student': {
+            const name = formatName(input);
+            if (!isValidName(name) || Object.hasOwn(students, name)) {
+                return error('Аты кемінде 3 әріп болуы керек немесе мұндай студент бар');
+            }
+            const grades = byName();
+            for (const subject of courseSubjects(students)) grades[subject] = null;
+            students[name] = grades;
+            return success('Студент қосылды: ' + name);
+        }
+        case 'add_subject': {
+            const subject = formatTitle(input);
+            if (!subject || courseSubjects(students).includes(subject)) return error('Пән атауы бос немесе мұндай пән бар');
+            if (!Object.keys(students).length) return error('Алдымен студент қосыңыз');
+            for (const grades of Object.values(students)) grades[subject] = null;
+            return success('Пән қосылды: ' + subject);
+        }
+        case 'delete_course':
+            delete college[course];
+            return success('Курс жойылды: ' + course);
+        case 'delete_student':
+            delete students[submitter.value];
+            return success('Студент жойылды');
+        case 'delete_subject':
+            for (const grades of Object.values(students)) delete grades[submitter.value];
+            return success('Пән жойылды');
+        case 'save': {
+            const updated = saveCourse(students, form);
+            college[course] = updated.students;
+            return updated.errors
+                ? error(`${updated.errors} қате мән сақталмады (баға 1–5, аты кемінде 3 әріп)`)
+                : success('Өзгерістер сақталды');
+        }
+    }
+}
+
+function renderTests() {
+    const demo = defaultCollege();
+    const tests = [
+        ['Аты-жөнін форматтау', "formatName('  aSEL aiym ')", formatName('  aSEL aiym '), 'Asel Aiym'],
+        ['Бағалар қосындысы', 'studentSum([5, 4, 3])', studentSum([5, 4, 3]), 12],
+        ['Орташа балл', 'formatNumber(studentAverage([5, 4, 4]))', formatNumber(studentAverage([5, 4, 4])), '4.33'],
+        ['GPA есептеу', 'toGpa(5)', toGpa(5), 4],
+        ['Бос баға есептелмейді', 'studentAverage([5, null, 3])', studentAverage([5, null, 3]), 4],
+        ['Дұрыс баға', 'isValidGrade(5)', isValidGrade(5), true],
+        ['Қате баға', 'isValidGrade(7)', isValidGrade(7), false],
+        ['Студентті іздеу', "findStudent(demo, 'dias serikov')?.name", findStudent(demo, 'dias serikov')?.name, 'Dias Serikov'],
+        ['Жоқ студент', "findStudent(demo, 'Nobody')", findStudent(demo, 'Nobody'), null],
+        ['GPA бойынша сұрыптау', "sortedNames(demo['1 курс'], 'gpa')[0]", sortedNames(demo['1 курс'], 'gpa')[0], 'Asel Aiym'],
+        ['3D массивтен баға алу', "demo['1 курс']['Asel Aiym']['Математика']", demo['1 курс']['Asel Aiym']['Математика'], 5]
+    ];
+    const passed = tests.filter(([, , actual, expected]) => actual === expected).length;
+    const check = (ok) => `<span class="mark ${ok ? 'yes' : 'no'}">${ok ? '✓' : '✗'}</span>`;
+    const methods = [
+        ['Жолдық', ['trim', 'toLowerCase', 'toUpperCase', 'replace', 'includes', 'repeat']],
+        ['Массив', ['reduce', 'sort', 'find', 'filter', 'map', 'slice', 'flatMap']]
+    ];
+    return `<div class="page-head"><div><h1>Тексеру</h1><p>JavaScript функцияларының жұмысын тексеру.</p></div></div>
+    <div class="cards">${statCard('Тесттер', `${passed} / ${tests.length}`, 'өтті', '✅')}</div>
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-title">Қолданылған әдістер</div>
+            ${methods.map(([label, names]) => `<p class="muted">${label}</p>
+                <div class="chips">${names.map((name) => `<span class="chip">${name}()</span>`).join('')}</div>`).join('')}
+        </div>
+        <div class="card">
+            <div class="card-title">Функцияларды тексеру</div>
+            ${tests.map(([name, call, actual, expected]) => `<div class="check-row">
+                ${check(actual === expected)}
+                <div><b>${name}</b><small><code>${escapeHtml(call)}</code> → ${escapeHtml(actual)}</small></div>
+            </div>`).join('')}
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-title">Қорғау жоспары (5 минут)</div>
+        <ol class="plan">
+            <li><b>Дизайнер</b> — команда, бастапқы бет, басты бет, журнал (1.5 мин)</li>
+            <li><b>Программист</b> — форматтау, қосынды, орташа балл, GPA, іздеу, сұрыптау, формалар (1.5 мин)</li>
+            <li><b>Деректер аналитигі</b> — 3D құрылымы: курс → студент → пән мен баға (1 мин)</li>
+            <li><b>Тестировщик</b> — тест нәтижелері және қорытынды (1 мин)</li>
+        </ol>
+    </div>`;
+}
+
+function render(messages = []) {
+    const params = new URLSearchParams(location.hash.slice(1));
+    const page = params.get('page') ?? 'welcome';
+    const welcome = page === 'welcome';
+    document.body.classList.toggle('welcome-page', welcome);
+    document.title = welcome ? 'Код Батырлары — Smart College' : 'Smart College';
+    if (welcome) {
+        app.innerHTML = renderWelcome(collegeStats());
+        return;
+    }
+    const content = page === 'journal' ? renderJournal(params)
+        : page === 'test' ? renderTests()
+        : renderDashboard(collegeStats());
+    app.innerHTML = renderLayout(page, params.get('q') ?? '', content, messages);
+}
+
+app.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const form = event.target;
+    const data = new FormData(form);
+    const action = form.dataset.action;
+    if (action === 'search' || action === 'filter') {
+        const address = route('journal', Object.fromEntries(data));
+        if (location.hash === address) render();
+        else location.hash = address;
+        return;
+    }
+    const feedback = handleAction(form, data, event.submitter);
+    if (!feedback) return;
+    const messages = [feedback];
+    try {
+        localStorage.setItem(storageKey, JSON.stringify(college));
+    } catch {
+        messages.push(['error', 'Браузер жергілікті сақтауға рұқсат бермеді. Өзгерістер осы бет жабылғанша қолданылады.']);
+    }
+    render(messages);
+    window.scrollTo(0, 0);
+});
+
+window.addEventListener('hashchange', () => {
+    render();
+    window.scrollTo(0, 0);
+});
+render();
+
+    </script>
+</body>
+</html>
